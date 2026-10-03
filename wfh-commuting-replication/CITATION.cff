@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the associated article."
+title: "Replication package: WFH policy and sustainable commuting (NYC)"
+authors:
+  - family-names: "[LAST NAME]"
+    given-names: "Xinge"
+version: "1.0.0"
+date-released: "[YYYY-MM-DD]"
+repository-code: "[GITHUB REPOSITORY URL — TO BE COMPLETED]"
+license: MIT
