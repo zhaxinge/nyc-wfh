@@ -6,5 +6,5 @@ authors:
     given-names: "Xinge"
 version: "1.0.0"
 date-released: "[YYYY-MM-DD]"
-repository-code: "[GITHUB REPOSITORY URL — TO BE COMPLETED]"
+repository-code: "https://github.com/zhaxinge/nyc-wfh"
 license: MIT

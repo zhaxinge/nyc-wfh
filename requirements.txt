@@ -1,6 +1,8 @@
-# Pin versions you actually used (pip freeze | grep -E "pandas|numpy|statsmodels|matplotlib|scikit-learn")
-pandas
-numpy
-statsmodels
-matplotlib
-jupyter
+# Versions used to verify the replication (Python 3.11)
+pandas==3.0.6
+numpy==2.4.6
+scipy==1.17.1
+statsmodels==0.15.0
+matplotlib==3.11.2
+nbconvert
+ipykernel
