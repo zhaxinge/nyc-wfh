@@ -1421,3 +1421,56 @@ print("NOTE: reported as corroborating evidence only, not a causal mediation cla
 json.dump(results, open(os.path.join(RESULTSDIR, 'revision_results.json'),'w'), indent=1)
 print("\nSaved revision_results.json")
 
+
+# ## Manuscript values not printed above, and weighted vs. unweighted descriptives
+# 
+# Values quoted in the manuscript text that earlier cells compute internally but do not print, plus the
+# weighted and unweighted descriptive statistics referred to in Materials and methods
+# (written to `results/descriptives_weighted_unweighted.csv`).
+
+# In[22]:
+
+
+k1, k2 = 'wfh_policy_6', 'I(wfh_policy_6 ** 2)'
+Q = f"sustainable_mode ~ wfh_policy_6 + I(wfh_policy_6**2) + {CTRL}"
+m_q  = smf.logit(Q, data=d).fit(disp=0, cov_type="HC3")
+m_ql = smf.logit(Q + " + work_core", data=d).fit(disp=0, cov_type="HC3")
+
+print("Diminishing returns (quadratic, HC3):")
+print(f"  WFHA   b={m_q.params[k1]:+.3f}, robust SE={m_q.bse[k1]:.3f}, p={m_q.pvalues[k1]:.4f}")
+print(f"  WFHA^2 b={m_q.params[k2]:+.3f}, robust SE={m_q.bse[k2]:.3f}, p={m_q.pvalues[k2]:.4f}")
+
+m_cat = smf.logit(f"sustainable_mode ~ C(wfh_3level, Treatment(1)) + {CTRL} + work_core",
+                  data=d).fit(disp=0, cov_type="HC3")
+cat_ame = m_cat.get_margeff().summary_frame().iloc[:2]
+print("\nLocation-adjusted categorical logit, AMEs (medium reference):")
+for (idx, row), lab in zip(cat_ame.iterrows(), ['low vs medium', 'high vs medium']):
+    print(f"  {lab:15s} AME={row['dy/dx']:+.3f}, p={row['Pr(>|z|)']:.3f}")
+
+OTH = "income_clean + education_clean + cross_county + work_core"
+F = smf.logit(f"sustainable_mode ~ (wfh_policy_6 + I(wfh_policy_6**2))*C(age_old) + {OTH}", data=d).fit(disp=0)
+R = smf.logit(f"sustainable_mode ~ wfh_policy_6*C(age_old) + I(wfh_policy_6**2) + {OTH}", data=d).fit(disp=0)
+s = 2 * (F.llf - R.llf)
+print(f"\nCurvature x age (median split) LR chi2(1) = {s:.2f}, p = {chi2.sf(s, 1):.3f}")
+
+print("\nWorkplace location:")
+print(f"  work_manhattan b={m_ql.params['work_core']:+.3f}, SE={m_ql.bse['work_core']:.3f}, p={m_ql.pvalues['work_core']:.2g}")
+print(f"  WFHA   {m_q.params[k1]:+.3f} -> {m_ql.params[k1]:+.3f}  ({100*(1-m_ql.params[k1]/m_q.params[k1]):.1f}% reduction, log-odds)")
+print(f"  WFHA^2 {m_q.params[k2]:+.3f} -> {m_ql.params[k2]:+.3f}  ({100*(1-m_ql.params[k2]/m_q.params[k2]):.1f}% reduction, log-odds)")
+F = smf.logit(f"sustainable_mode ~ (wfh_policy_6 + I(wfh_policy_6**2))*work_core + {CTRL}", data=d).fit(disp=0)
+R = smf.logit(Q + " + work_core", data=d).fit(disp=0)
+s = 2 * (F.llf - R.llf)
+print(f"  WFHA x location joint LR chi2(2) = {s:.2f}, p = {chi2.sf(s, 2):.2f}")
+
+desc = []
+for v in ['age', 'education_clean', 'income_clean', 'wfh_policy_6', 'cross_county', 'work_core', 'sustainable_mode']:
+    wm = np.average(d[v], weights=d['w'])
+    wsd = np.sqrt(np.average((d[v] - wm) ** 2, weights=d['w']))
+    desc.append([v, d[v].mean(), d[v].std(), wm, wsd, d[v].min(), d[v].max()])
+desc = pd.DataFrame(desc, columns=['variable', 'mean_unweighted', 'sd_unweighted',
+                                   'mean_weighted', 'sd_weighted', 'min', 'max'])
+print("\nWeighted vs. unweighted descriptives (N = 715):")
+print(desc.to_string(index=False, float_format=lambda x: f"{x:.2f}"))
+desc.to_csv(os.path.join(RESULTSDIR, 'descriptives_weighted_unweighted.csv'), index=False)
+print("Saved descriptives_weighted_unweighted.csv")
+
