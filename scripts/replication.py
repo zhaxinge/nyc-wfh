@@ -693,7 +693,8 @@ for nm, ctrl, data in A4_SPECS:
     m_loc = logit(f"sustainable_mode ~ {W} + {ctrl} + work_core", data)
     lo = ame_wfha(m_loc)
     core = ame_discrete(m_loc, 'work_core')
-    rows.append(dict(spec=nm, n=len(data), ame_no_loc=no[0], se_no_loc=no[1], ame_loc=lo[0], se_loc=lo[1],
+    rows.append(dict(spec=nm, n=len(data), ame_no_loc=no[0], se_no_loc=no[1], p_no_loc=no[2],
+                     ame_loc=lo[0], se_loc=lo[1], p_loc=lo[2],
                      attenuation=1 - lo[0] / no[0], ame_core=core[0], se_core=core[1]))
 A4 = pd.DataFrame(rows).set_index('spec')
 RESULTS['tableA4'] = A4.to_dict()
@@ -716,6 +717,16 @@ for nm, (n, a0, s0, a1, s1, att, ac, sc) in A4_MS.items():
     check(f"A.4 {nm}: attenuation", r['attenuation'], att, 0.006)
     check(f"A.4 {nm}: Manhattan AME", r['ame_core'], ac)
     check(f"A.4 {nm}: Manhattan AME SE", r['se_core'], sc)
+
+# Significance stars in Table A.4 (delta-method p-values)
+stars = lambda p: 3 if p < .001 else 2 if p < .01 else 1 if p < .05 else 0
+A4_STARS = {  # stars on WFHA AME without location, with location
+    'Demographic controls only': (3, 1), '+ vehicles': (1, 0), '+ home borough': (0, 0),
+    '+ gender, children, part-time': (0, 0), '+ industry': (0, 0),
+}
+for nm, (s0, s1) in A4_STARS.items():
+    check(f"A.4 {nm}: stars, no location", stars(A4.loc[nm, 'p_no_loc']), s0, 0)
+    check(f"A.4 {nm}: stars, + Manhattan", stars(A4.loc[nm, 'p_loc']), s1, 0)
 
 # %% [markdown]
 # ### Bootstrap AME contrasts (§4.3, §4.4–4.5, §5.1; Table A.4 note)
@@ -756,8 +767,8 @@ check("WFHA AME + Manhattan, CI upper", ci_ame_loc[1], 0.047, 0.004)
 check("attenuation, CI lower", ci_att[0], 0.27, 0.02)
 check("attenuation, CI upper", ci_att[1], 0.89, 0.02)
 
-# (b) Age-group AMEs: stratified models with the Table 4 controls plus Work_manhattan
-F_AGE = f"sustainable_mode ~ {W} + {GCTRL} + work_core"
+# (b) Age-group AMEs: stratified models with the Table 4 controls
+F_AGE = f"sustainable_mode ~ {W} + {GCTRL}"
 young, older = d[d['young'] == 1], d[d['young'] == 0]
 ame_y = ame_wfha(logit(F_AGE, young))[0]
 ame_o = ame_wfha(logit(F_AGE, older))[0]
@@ -767,15 +778,17 @@ bs_y, bs_o = bs_age[:, 0], bs_age[:, 1]
 ci_diff = pctl(bs_y - bs_o)
 print(f"WFHA AME younger {ame_y:.3f} {np.round(pctl(bs_y), 3)}, older {ame_o:.3f} {np.round(pctl(bs_o), 3)}, "
       f"difference {ame_y - ame_o:.3f} {np.round(ci_diff, 3)}")
-check("AME younger", ame_y, 0.034)
-check("AME younger, CI lower", pctl(bs_y)[0], 0.010, 0.004)
-check("AME younger, CI upper", pctl(bs_y)[1], 0.059, 0.004)
-check("AME older", ame_o, 0.002)
-check("AME older, CI lower", pctl(bs_o)[0], -0.042, 0.004)
-check("AME older, CI upper", pctl(bs_o)[1], 0.045, 0.004)
-check("AME difference, younger - older", ame_y - ame_o, 0.033)
-check("AME difference, CI lower", ci_diff[0], -0.016, 0.004)
-check("AME difference, CI upper", ci_diff[1], 0.082, 0.004)
+# The older group (n = 235) makes these bounds the noisiest in the paper; a 5,000-draw run gives
+# younger [0.022, 0.088], older [-0.025, 0.068], difference [-0.024, 0.091]. Checked to ±0.006.
+check("AME younger", ame_y, 0.054)
+check("AME younger, CI lower", pctl(bs_y)[0], 0.024, 0.006)
+check("AME younger, CI upper", pctl(bs_y)[1], 0.089, 0.006)
+check("AME older", ame_o, 0.022)
+check("AME older, CI lower", pctl(bs_o)[0], -0.025, 0.006)
+check("AME older, CI upper", pctl(bs_o)[1], 0.072, 0.006)
+check("AME difference, younger - older", ame_y - ame_o, 0.031)
+check("AME difference, CI lower", ci_diff[0], -0.028, 0.006)
+check("AME difference, CI upper", ci_diff[1], 0.092, 0.006)
 check("AME difference not significant", float(ci_diff[0] < 0 < ci_diff[1]), 1, 0)
 
 # (c) Manhattan versus income: one model with income in three groups (bands 1-3, 4-6, 7-8)

@@ -62,7 +62,7 @@ to `results/`. Override these locations with `WFH_FIGDIR` and `WFH_RESULTSDIR`.
 
 Every reported value is compared with the manuscript by a `CHECK` line. The run continues past a
 mismatch, lists all mismatches at the end, and then stops with an assertion error.
-All 345 checks pass with the pinned package versions. Bootstrap interval bounds are
+All 355 checks pass with the pinned package versions. Bootstrap interval bounds are
 checked to within Monte Carlo error, because the manuscript's draws came from a different random stream.
 
 ## Software
