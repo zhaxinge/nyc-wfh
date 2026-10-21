@@ -618,16 +618,20 @@ for col, n in zip(['Age 18-44', 'Age 45+', 'Manhattan', 'Other'], [462, 232, 499
 # %% [markdown]
 # ### Table A.2 — pooled tests of whether the WFH association differs across groups
 #
-# Likelihood-ratio tests in pooled unweighted logit models with the controls of Table 2.
+# Likelihood-ratio tests in pooled unweighted logit models. The age test enters age once, as the
+# group (no continuous age control); the Manhattan test uses the controls of Table 2. The income
+# test interacts the WFHA terms with a high/low median split of income, adding Work_manhattan.
 
 # %%
 A2 = {}
-for nm, g in [('age group', 'C(old)'), ('Manhattan workplace', 'C(work_core)')]:
-    base = f"sustainable_mode ~ {W} + {g} + {CTRL}"
-    A2[f'WFHA terms x {nm}'] = lr(f"sustainable_mode ~ ({W})*{g} + {CTRL}", base, d)
-    A2[f'WFHA linear term x {nm}'] = lr(f"sustainable_mode ~ {W} + {X}:{g} + {g} + {CTRL}", base, d)
-A2['WFHA terms x income (continuous)'] = lr(f"sustainable_mode ~ ({W})*income_clean + {CTRL}",
-                                            f"sustainable_mode ~ {W} + {CTRL}", d)
+for nm, g, ctrl in [('age group', 'C(old)', GCTRL), ('Manhattan workplace', 'C(work_core)', CTRL)]:
+    base = f"sustainable_mode ~ {W} + {g} + {ctrl}"
+    A2[f'WFHA terms x {nm}'] = lr(f"sustainable_mode ~ ({W})*{g} + {ctrl}", base, d)
+    A2[f'WFHA linear term x {nm}'] = lr(f"sustainable_mode ~ {W} + {X}:{g} + {g} + {ctrl}", base, d)
+d['inc_high'] = (d['income_clean'] > d['income_clean'].median()).astype(int)
+INC_CTRL = "age + education_clean + cross_county + work_core"
+A2['WFHA terms x income (median split)'] = lr(f"sustainable_mode ~ ({W})*C(inc_high) + {INC_CTRL}",
+                                              f"sustainable_mode ~ {W} + C(inc_high) + {INC_CTRL}", d)
 A2['Quadratic term added, without Manhattan'] = lr_q
 A2['Quadratic term added, with Manhattan'] = lr(f"sustainable_mode ~ {W} + {CTRL} + work_core",
                                                 f"sustainable_mode ~ {X} + {CTRL} + work_core", d)
@@ -638,7 +642,7 @@ for k, (s, df_, p) in A2.items():
 for k, (s, p) in {'WFHA terms x age group': (6.28, 0.043), 'WFHA linear term x age group': (6.00, 0.014),
                   'WFHA terms x Manhattan workplace': (0.91, 0.634),
                   'WFHA linear term x Manhattan workplace': (0.77, 0.380),
-                  'WFHA terms x income (continuous)': (3.16, 0.206),
+                  'WFHA terms x income (median split)': (3.16, 0.206),
                   'Quadratic term added, with Manhattan': (2.51, 0.113)}.items():
     check(f"A.2 {k}: chi2", A2[k][0], s, 0.006)
     check(f"A.2 {k}: p", A2[k][2], p)
@@ -720,8 +724,8 @@ check("A.5 Spearman r(vehicles, sustainable)", spearmanr(d['veh'], d['sustainabl
 check("A.5 r(vehicles, WFHA)", d['veh'].corr(d[X]), -0.16, 0.006)
 check("A.5 r(WFHA, sustainable)", d[X].corr(d['sustainable_mode']), 0.11, 0.006)
 r2_veh = smf.logit("sustainable_mode ~ veh", data=d).fit(disp=0).prsquared
-r2_wfh = smf.logit(f"sustainable_mode ~ {W}", data=d).fit(disp=0).prsquared
-r2_both = smf.logit(f"sustainable_mode ~ {W} + veh", data=d).fit(disp=0).prsquared
+r2_wfh = smf.logit(f"sustainable_mode ~ {X}", data=d).fit(disp=0).prsquared
+r2_both = smf.logit(f"sustainable_mode ~ {X} + veh", data=d).fit(disp=0).prsquared
 print(f"pseudo R2: vehicles only {r2_veh:.3f} / WFHA only {r2_wfh:.3f} / both {r2_both:.3f}")
 check("A.5 pseudo R2, vehicles only", r2_veh, 0.144)
 check("A.5 pseudo R2, WFHA only", r2_wfh, 0.017)
