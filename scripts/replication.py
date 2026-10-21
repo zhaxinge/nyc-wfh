@@ -718,6 +718,99 @@ for nm, (n, a0, s0, a1, s1, att, ac, sc) in A4_MS.items():
     check(f"A.4 {nm}: Manhattan AME SE", r['se_core'], sc)
 
 # %% [markdown]
+# ### Bootstrap AME contrasts (§4.3, §4.4–4.5, §5.1; Table A.4 note)
+#
+# Percentile intervals from 1,000 resamples. Bounds depend on the random stream, so they are checked
+# to within Monte Carlo error (±0.004, or ±0.006 for values reported to two decimals; ±0.02 for the
+# attenuation share, reported in whole percent).
+
+# %%
+def boot(fn, data, seed=7):
+    rng = np.random.default_rng(seed)
+    out = []
+    for _ in range(B_BOOT):
+        try:
+            out.append(fn(data.sample(len(data), replace=True, random_state=int(rng.integers(1e9)))))
+        except Exception:
+            continue
+    return np.array(out)
+
+
+def pctl(x):
+    return list(np.percentile(x, [2.5, 97.5]))
+
+
+# (a) Pooled WFHA AME once Manhattan is added, and the attenuation share
+def loc_attenuation(data):
+    a0 = ame_wfha(smf.logit(f"sustainable_mode ~ {W} + {CTRL}", data=data).fit(disp=0))[0]
+    a1 = ame_wfha(smf.logit(f"sustainable_mode ~ {W} + {CTRL} + work_core", data=data).fit(disp=0))[0]
+    return a1, 1 - a1 / a0
+
+
+bs_att = boot(loc_attenuation, d)
+ci_ame_loc, ci_att = pctl(bs_att[:, 0]), pctl(bs_att[:, 1])
+print(f"WFHA AME + Manhattan CI [{ci_ame_loc[0]:.3f}, {ci_ame_loc[1]:.3f}]; "
+      f"attenuation CI [{ci_att[0]:.0%}, {ci_att[1]:.0%}]")
+check("WFHA AME + Manhattan, CI lower", ci_ame_loc[0], 0.003, 0.004)
+check("WFHA AME + Manhattan, CI upper", ci_ame_loc[1], 0.047, 0.004)
+check("attenuation, CI lower", ci_att[0], 0.27, 0.02)
+check("attenuation, CI upper", ci_att[1], 0.89, 0.02)
+
+# (b) Age-group AMEs: stratified models with the Table 4 controls plus Work_manhattan
+F_AGE = f"sustainable_mode ~ {W} + {GCTRL} + work_core"
+young, older = d[d['young'] == 1], d[d['young'] == 0]
+ame_y = ame_wfha(logit(F_AGE, young))[0]
+ame_o = ame_wfha(logit(F_AGE, older))[0]
+# Resample the pooled sample, then split by age, so the difference has a joint distribution
+bs_age = boot(lambda b: [ame_wfha(smf.logit(F_AGE, data=b[b['young'] == v]).fit(disp=0))[0] for v in (1, 0)], d)
+bs_y, bs_o = bs_age[:, 0], bs_age[:, 1]
+ci_diff = pctl(bs_y - bs_o)
+print(f"WFHA AME younger {ame_y:.3f} {np.round(pctl(bs_y), 3)}, older {ame_o:.3f} {np.round(pctl(bs_o), 3)}, "
+      f"difference {ame_y - ame_o:.3f} {np.round(ci_diff, 3)}")
+check("AME younger", ame_y, 0.034)
+check("AME younger, CI lower", pctl(bs_y)[0], 0.010, 0.004)
+check("AME younger, CI upper", pctl(bs_y)[1], 0.059, 0.004)
+check("AME older", ame_o, 0.002)
+check("AME older, CI lower", pctl(bs_o)[0], -0.042, 0.004)
+check("AME older, CI upper", pctl(bs_o)[1], 0.045, 0.004)
+check("AME difference, younger - older", ame_y - ame_o, 0.033)
+check("AME difference, CI lower", ci_diff[0], -0.016, 0.004)
+check("AME difference, CI upper", ci_diff[1], 0.082, 0.004)
+check("AME difference not significant", float(ci_diff[0] < 0 < ci_diff[1]), 1, 0)
+
+# (c) Manhattan versus income: one model with income in three groups (bands 1-3, 4-6, 7-8)
+INC3 = ['low', 'mid', 'high']
+d['inc3'] = pd.Categorical(pd.cut(d['income_clean'], [0, 3, 6, 99], labels=INC3), categories=INC3)
+F_INC3 = f"sustainable_mode ~ {W} + age + C(inc3) + education_clean + cross_county + work_core"
+
+
+def loc_vs_income(data):
+    m = smf.logit(F_INC3, data=data).fit(disp=0)
+    on, off, hi, lo = (data.copy() for _ in range(4))
+    on['work_core'], off['work_core'] = 1.0, 0.0
+    hi['inc3'] = pd.Categorical(['high'] * len(data), categories=INC3)
+    lo['inc3'] = pd.Categorical(['low'] * len(data), categories=INC3)
+    return (m.predict(on) - m.predict(off)).mean(), (m.predict(hi) - m.predict(lo)).mean()
+
+
+core_ame, inc_ame = loc_vs_income(d)
+bs_li = boot(loc_vs_income, d)
+ci_core, ci_inc = pctl(bs_li[:, 0]), pctl(bs_li[:, 1])
+print(f"Manhattan AME {core_ame:.3f} {np.round(ci_core, 3)}; high vs low income AME {inc_ame:.3f} {np.round(ci_inc, 3)}")
+check("Manhattan AME (three income groups)", core_ame, 0.29, 0.006)
+check("Manhattan AME, CI lower", ci_core[0], 0.21, 0.006)
+check("Manhattan AME, CI upper", ci_core[1], 0.37, 0.006)
+check("high vs low income AME", inc_ame, -0.02, 0.006)
+check("high vs low income AME, CI lower", ci_inc[0], -0.10, 0.004)
+check("high vs low income AME, CI upper", ci_inc[1], 0.06, 0.006)
+
+RESULTS['bootstrap_contrasts'] = dict(
+    ame_loc_ci=ci_ame_loc, attenuation_ci=ci_att,
+    ame_younger=ame_y, ame_younger_ci=pctl(bs_y), ame_older=ame_o, ame_older_ci=pctl(bs_o),
+    ame_age_diff=ame_y - ame_o, ame_age_diff_ci=ci_diff,
+    manhattan_ame=core_ame, manhattan_ame_ci=ci_core, income_high_low_ame=inc_ame, income_high_low_ci=ci_inc)
+
+# %% [markdown]
 # ### Table A.5 — diagnostics for the mediator (household vehicles)
 
 # %%

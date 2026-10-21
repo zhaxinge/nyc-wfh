@@ -53,13 +53,13 @@ python scripts/replication.py
 # or: jupyter nbconvert --to notebook --execute notebooks/replication.ipynb
 ```
 
-Runtime is about 4 minutes (bootstrap steps: 1,000 resamples, fixed seeds). Figures go to `figures/` and numeric results
+Runtime is about 7 minutes (bootstrap steps: 1,000 resamples, fixed seeds). Figures go to `figures/` and numeric results
 to `results/`. Override these locations with `WFH_FIGDIR` and `WFH_RESULTSDIR`.
 
 Every reported value is compared with the manuscript by a `CHECK` line. The run continues past a
 mismatch, lists all mismatches at the end, and then stops with an assertion error.
-All 325 checks pass with the pinned package versions. Bootstrap interval bounds in Table 3 are
-checked to within ±0.004, because the manuscript's draws came from a different random stream.
+All 345 checks pass with the pinned package versions. Bootstrap interval bounds are
+checked to within Monte Carlo error, because the manuscript's draws came from a different random stream.
 
 ## Software
 
