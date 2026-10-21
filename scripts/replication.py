@@ -423,8 +423,10 @@ for g, (n, a, ap, tot, dr, ind, lo, hi, sh) in T3.items():
     check(f"Table 3 {g}: total AME", r['total'], tot)
     check(f"Table 3 {g}: direct AME", r['direct'], dr)
     check(f"Table 3 {g}: indirect AME", r['indirect'], ind)
-    check(f"Table 3 {g}: indirect CI lower", r['ci'][0], lo)
-    check(f"Table 3 {g}: indirect CI upper", r['ci'][1], hi)
+    # Percentile bounds depend on the random stream; the manuscript's came from a different one,
+    # so they are checked to within Monte Carlo error rather than to the third decimal.
+    check(f"Table 3 {g}: indirect CI lower", r['ci'][0], lo, 0.004)
+    check(f"Table 3 {g}: indirect CI upper", r['ci'][1], hi, 0.004)
     if sh is not None:
         check(f"Table 3 {g}: share mediated", r['share'], sh, 0.006)
 for g in ('Older (45+)', 'Manhattan'):

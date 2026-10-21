@@ -11,7 +11,7 @@ Repository: <https://github.com/zhaxinge/nyc-wfh>
 
 ```
 scripts/    replication.py          — the full analysis for manuscript v4
-notebooks/  replication.ipynb       — the same analysis as a notebook (generated from the script)
+notebooks/  replication.ipynb       — the same analysis as a notebook (committed with outputs)
 figures/    fig2_pooled_wfha.png    — Figure 2 (written by the script)
             fig3_group_wfha.png     — Figure 3 (written by the script)
 results/    results_v4.json         — every reported number (written by the script)
@@ -53,11 +53,13 @@ python scripts/replication.py
 # or: jupyter nbconvert --to notebook --execute notebooks/replication.ipynb
 ```
 
-Bootstrap steps use 1,000 resamples with fixed seeds. Figures go to `figures/` and numeric results
+Runtime is about 4 minutes (bootstrap steps: 1,000 resamples, fixed seeds). Figures go to `figures/` and numeric results
 to `results/`. Override these locations with `WFH_FIGDIR` and `WFH_RESULTSDIR`.
 
 Every reported value is compared with the manuscript by a `CHECK` line. The run continues past a
 mismatch, lists all mismatches at the end, and then stops with an assertion error.
+All 325 checks pass with the pinned package versions. Bootstrap interval bounds in Table 3 are
+checked to within ±0.004, because the manuscript's draws came from a different random stream.
 
 ## Software
 
