@@ -2,10 +2,14 @@
 
 Code and materials to reproduce every reported value, table, and figure in:
 
-> [AUTHORS]. [YEAR]. *Breaking the Daily Routine: Habit Disruption, Vehicle Ownership, and the
+> Zhang, X. [YEAR]. *Breaking the Daily Routine: Habit Disruption, Vehicle Ownership, and the
 > Impact of Work-from-Home on Sustainable Commuting*. Submitted to *Sustainability Science*.
 
 Repository: <https://github.com/zhaxinge/nyc-wfh>
+
+## Author
+
+**Xinge Zhang** (corresponding author), University of Pennsylvania — <zhaxinge@upenn.edu>
 
 ## Repository structure
 

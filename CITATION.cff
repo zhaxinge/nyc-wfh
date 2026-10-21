@@ -2,8 +2,10 @@ cff-version: 1.2.0
 message: "If you use this code, please cite the associated article."
 title: "Replication package: Breaking the Daily Routine — habit disruption, vehicle ownership, and the impact of work-from-home on sustainable commuting (NYC)"
 authors:
-  - family-names: "[LAST NAME]"
+  - family-names: "Zhang"
     given-names: "Xinge"
+    affiliation: "University of Pennsylvania"
+    email: "zhaxinge@upenn.edu"
 version: "2.0.0"
 date-released: "[YYYY-MM-DD]"
 repository-code: "https://github.com/zhaxinge/nyc-wfh"
