@@ -1,4 +1,4 @@
-# Replication Package — Breaking the Daily Routine (NYC WFH and Sustainable Commuting)
+# Breaking the Daily Routine (NYC WFH and Sustainable Commuting)
 
 Code and materials to reproduce every reported value, table, and figure in:
 
