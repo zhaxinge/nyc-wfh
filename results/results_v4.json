@@ -1,0 +1,335 @@
+{
+ "N": 715,
+ "table2": {
+  "b1": 0.837369209042342,
+  "b2": -0.10542863408648208,
+  "vertex": 3.9712608263304268,
+  "vertex_se": 0.4936844882130715,
+  "lr_quad": 7.1421938012158535,
+  "lr_quad_p": 0.00752909963125008
+ },
+ "vertex_boot_ci": [
+  3.220903518283395,
+  7.016782390835955
+ ],
+ "boot_quad_sig_pct": 74.3,
+ "loo_quad_p": {
+  "0": 0.09768209035304216,
+  "1": 0.004683331008059227,
+  "2": 0.045984279367994735,
+  "3": 0.004479938886334361,
+  "4": 0.004220227567049856,
+  "5": 0.013999270842959415,
+  "6": 0.002019441637983168
+ },
+ "table3": {
+  "All workers": {
+   "n": 715,
+   "a": -0.07718058713818071,
+   "a_p": 2.586002847288571e-07,
+   "total": 0.044166227672586225,
+   "total_p": 0.000585060602971052,
+   "direct": 0.02491084454582348,
+   "direct_p": 0.033912802917688764,
+   "indirect": 0.019255383126762744,
+   "share": 0.43597527209040926,
+   "ci": [
+    0.009632380963045898,
+    0.029826292902428872
+   ]
+  },
+  "Younger (18-44)": {
+   "n": 480,
+   "a": -0.06895321362988374,
+   "a_p": 4.970895875390382e-05,
+   "total": 0.05359395924049304,
+   "total_p": 0.0008532274189616072,
+   "direct": 0.039375730734502075,
+   "direct_p": 0.00814155380508383,
+   "indirect": 0.014218228505990964,
+   "share": 0.26529535618350714,
+   "ci": [
+    0.0018155803515005095,
+    0.027007816866154465
+   ]
+  },
+  "Older (45+)": {
+   "n": 235,
+   "a": -0.09094012085997659,
+   "a_p": 0.00676553098805455,
+   "total": 0.02240709572138729,
+   "total_p": 0.33986905150244207,
+   "direct": 9.484644888325039e-06,
+   "direct_p": 0.999618470675398,
+   "indirect": 0.022397611076498965,
+   "share": 0.9995767124393872,
+   "ci": [
+    0.0052296156142334444,
+    0.04433640278754642
+   ]
+  },
+  "Manhattan": {
+   "n": 514,
+   "a": -0.04932372892679252,
+   "a_p": 0.0038137609174455364,
+   "total": -0.00019922301992882785,
+   "total_p": 0.9847299910335551,
+   "direct": -0.0036313839139880378,
+   "direct_p": 0.7179084748950275,
+   "indirect": 0.00343216089405921,
+   "share": -17.227732494394196,
+   "ci": [
+    -0.0007668377387192352,
+    0.009943101445755931
+   ]
+  },
+  "Other locations": {
+   "n": 201,
+   "a": -0.1416137958742419,
+   "a_p": 1.3922238603527042e-06,
+   "total": 0.07369387810114224,
+   "total_p": 0.011334777926441558,
+   "direct": 0.03938308594189032,
+   "direct_p": 0.16227597460610188,
+   "indirect": 0.03431079215925192,
+   "share": 0.4655853789125003,
+   "ci": [
+    0.010798826286757282,
+    0.05829790679991397
+   ]
+  }
+ },
+ "tables4_5": {
+  "Younger (18-44)": {
+   "b1": 0.8544350200601726,
+   "b2": -0.08562812237792561,
+   "joint_p": 0.0011313849236787913,
+   "vertex": 4.989219641469334,
+   "vertex_se": 1.303380661389074
+  },
+  "Older (45+)": {
+   "b1": 0.7281330360957816,
+   "b2": -0.12519788746560578,
+   "joint_p": 0.168803972810801,
+   "vertex": 2.9079286034111935,
+   "vertex_se": 0.5347788131902602
+  },
+  "Manhattan": {
+   "b1": 0.17518940024171006,
+   "b2": -0.03672509255746436,
+   "joint_p": 0.7901598833084125,
+   "vertex": 2.3851457959920497,
+   "vertex_se": 3.320749483328688
+  },
+  "Other locations": {
+   "b1": 0.5060615334661467,
+   "b2": -0.04359410952164401,
+   "joint_p": 0.03925334295560281,
+   "vertex": 5.804242121460154,
+   "vertex_se": 3.719788060862119
+  }
+ },
+ "weighted": {
+  "b1": 0.4991546453011179,
+  "b2": -0.07877694448693146,
+  "core": 1.766164280141607,
+  "joint": [
+   1.1974976695328268,
+   0.5494987198709312
+  ],
+  "wfh_x_age": -0.18723274624995362,
+  "wfh_x_age_p": 0.03452779788409301
+ },
+ "tableA1": {
+  "Pooled": {
+   "Primary: WFHA, quadratic": 0.0005246821418030328,
+   "Actual telework frequency, quadratic": 0.005661582503912815,
+   "WFHA, three levels": 0.0030774583080666737,
+   "WFHA, monthly or less vs. weekly": 0.3789294750568779,
+   "Age split 34/35": NaN,
+   "Manhattan core zone only": NaN,
+   "+ home borough": 0.009163110628480858,
+   "+ home borough, gender, children, part-time": 0.008951585509688276,
+   "+ home borough, industry": 0.05028019542847022,
+   "+ household vehicles": 0.027539256357395157
+  },
+  "Age 18-44": {
+   "Primary: WFHA, quadratic": 0.0011313849236787913,
+   "Actual telework frequency, quadratic": 0.0053675153054205055,
+   "WFHA, three levels": 0.0004520064416302143,
+   "WFHA, monthly or less vs. weekly": 0.13246150476219937,
+   "Age split 34/35": 0.017427665419959718,
+   "Manhattan core zone only": NaN,
+   "+ home borough": 0.020589659441473524,
+   "+ home borough, gender, children, part-time": 0.03999834090080301,
+   "+ home borough, industry": 0.15527103501311745,
+   "+ household vehicles": 0.018808754750671862
+  },
+  "Age 45+": {
+   "Primary: WFHA, quadratic": 0.168803972810801,
+   "Actual telework frequency, quadratic": 0.06984151414956413,
+   "WFHA, three levels": 0.7223526375925899,
+   "WFHA, monthly or less vs. weekly": 0.569095550612596,
+   "Age split 34/35": 0.004243389648309819,
+   "Manhattan core zone only": NaN,
+   "+ home borough": 0.1248843559057383,
+   "+ home borough, gender, children, part-time": 0.17010119331940304,
+   "+ home borough, industry": 0.08877963369326249,
+   "+ household vehicles": 0.17570581784667785
+  },
+  "Manhattan": {
+   "Primary: WFHA, quadratic": 0.7901598833084125,
+   "Actual telework frequency, quadratic": 0.021088354563917357,
+   "WFHA, three levels": 0.6329346486550379,
+   "WFHA, monthly or less vs. weekly": 0.7257367267658856,
+   "Age split 34/35": NaN,
+   "Manhattan core zone only": 0.7267852328430866,
+   "+ home borough": 0.7714970923635527,
+   "+ home borough, gender, children, part-time": 0.5370635371620016,
+   "+ home borough, industry": 0.23932775845525714,
+   "+ household vehicles": 0.4512200831170954
+  },
+  "Other": {
+   "Primary: WFHA, quadratic": 0.03925334295560281,
+   "Actual telework frequency, quadratic": 0.05192367845657861,
+   "WFHA, three levels": 0.01795624847183001,
+   "WFHA, monthly or less vs. weekly": 0.18408017941949956,
+   "Age split 34/35": NaN,
+   "Manhattan core zone only": 0.053081981226369236,
+   "+ home borough": 0.08025030378619498,
+   "+ home borough, gender, children, part-time": 0.05279271714145069,
+   "+ home borough, industry": 0.056069131441529196,
+   "+ household vehicles": 0.2977043120602307
+  }
+ },
+ "tableA2": {
+  "WFHA terms x age group": [
+   6.281702673518566,
+   2,
+   0.043245965345746464
+  ],
+  "WFHA linear term x age group": [
+   5.997986047209338,
+   1,
+   0.01432221856198288
+  ],
+  "WFHA terms x Manhattan workplace": [
+   0.9119924214194839,
+   2,
+   0.6338162388076977
+  ],
+  "WFHA linear term x Manhattan workplace": [
+   0.7699747882361407,
+   1,
+   0.38022485189814237
+  ],
+  "WFHA terms x income (median split)": [
+   3.1554449337536994,
+   2,
+   0.20644474793198186
+  ],
+  "Quadratic term added, without Manhattan": [
+   7.1421938012158535,
+   1,
+   0.00752909963125008
+  ],
+  "Quadratic term added, with Manhattan": [
+   2.505432371429265,
+   1,
+   0.11345434309537539
+  ]
+ },
+ "tableA4": {
+  "n": {
+   "Demographic controls only": 715,
+   "+ vehicles": 715,
+   "+ home borough": 715,
+   "+ gender, children, part-time": 694,
+   "+ industry": 715
+  },
+  "ame_no_loc": {
+   "Demographic controls only": 0.044166227672586225,
+   "+ vehicles": 0.02491084454582348,
+   "+ home borough": 0.020378425632330346,
+   "+ gender, children, part-time": 0.02102400868973239,
+   "+ industry": 0.011293203801600626
+  },
+  "se_no_loc": {
+   "Demographic controls only": 0.012844817732927147,
+   "+ vehicles": 0.011744266126520714,
+   "+ home borough": 0.010972198415217233,
+   "+ gender, children, part-time": 0.010952248311478728,
+   "+ industry": 0.011332474313197338
+  },
+  "ame_loc": {
+   "Demographic controls only": 0.02378425871272257,
+   "+ vehicles": 0.012167049220254418,
+   "+ home borough": 0.010176841296263285,
+   "+ gender, children, part-time": 0.010903151348177736,
+   "+ industry": 0.004577498665412758
+  },
+  "se_loc": {
+   "Demographic controls only": 0.010475346014689822,
+   "+ vehicles": 0.010008460453098627,
+   "+ home borough": 0.00988535786140875,
+   "+ gender, children, part-time": 0.009982787284659211,
+   "+ industry": 0.010790214835223341
+  },
+  "attenuation": {
+   "Demographic controls only": 0.461483129393789,
+   "+ vehicles": 0.5115762053802255,
+   "+ home borough": 0.5006070890914291,
+   "+ gender, children, part-time": 0.4813952225246859,
+   "+ industry": 0.5946678421969174
+  },
+  "ame_core": {
+   "Demographic controls only": 0.2976821895959099,
+   "+ vehicles": 0.2214485161317672,
+   "+ home borough": 0.22561347219121708,
+   "+ gender, children, part-time": 0.2293139372774219,
+   "+ industry": 0.1921997732426147
+  },
+  "se_core": {
+   "Demographic controls only": 0.0400259530891112,
+   "+ vehicles": 0.03614555611301994,
+   "+ home borough": 0.038047800875507076,
+   "+ gender, children, part-time": 0.03898726827608508,
+   "+ industry": 0.03512321025442561
+  }
+ },
+ "bootstrap_contrasts": {
+  "ame_loc_ci": [
+   0.0026617661705952093,
+   0.0440838791569017
+  ],
+  "attenuation_ci": [
+   0.27664901762487926,
+   0.8749810677283673
+  ],
+  "ame_younger": 0.03432131218812778,
+  "ame_younger_ci": [
+   0.009072575071627082,
+   0.05720446325622892
+  ],
+  "ame_older": 0.0016085254726213847,
+  "ame_older_ci": [
+   -0.04121808145444047,
+   0.04579006224606619
+  ],
+  "ame_age_diff": 0.03271278671550639,
+  "ame_age_diff_ci": [
+   -0.016708115013750496,
+   0.08169680844081229
+  ],
+  "manhattan_ame": 0.2934159482902357,
+  "manhattan_ame_ci": [
+   0.2088509800885949,
+   0.3719530035127113
+  ],
+  "income_high_low_ame": -0.019136680877940782,
+  "income_high_low_ci": [
+   -0.09835984064188538,
+   0.06378894789490991
+  ]
+ }
+}
