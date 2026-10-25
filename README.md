@@ -11,10 +11,12 @@ Repository: <https://github.com/zhaxinge/nyc-wfh>
 
 ```
 scripts/    replication.py          — the full analysis for manuscript v4
+            robustness_2024.py      — robustness check: replication with the 2024 CMS
 notebooks/  replication.ipynb       — the same analysis as a notebook (committed with outputs)
 figures/    fig2_pooled_wfha.png    — Figure 2 (written by the script)
             fig3_group_wfha.png     — Figure 3 (written by the script)
 results/    results_v4.json         — every reported number (written by the script)
+            robustness_2024.json    — results of the 2024 robustness check
 archive/    technical-report/       — code, figure and results for the previous revision
 data/raw/   (not tracked) NYC Citywide Mobility Survey Person file — see below
 ```
@@ -60,6 +62,39 @@ Every reported value is compared with the manuscript by a `CHECK` line. The run 
 mismatch, lists all mismatches at the end, and then stops with an assertion error.
 All 345 checks pass with the pinned package versions. Bootstrap interval bounds are
 checked to within Monte Carlo error, because the manuscript's draws came from a different random stream.
+
+## Robustness check: 2024 Citywide Mobility Survey
+
+`scripts/robustness_2024.py` asks whether the main pattern holds in the 2024 CMS. The 2024 survey
+does not ask about the employer's in-office requirement, so WFHA cannot be rebuilt. Both waves do record
+the respondent's **actual telework frequency**. The script puts it on one 0–6 scale (0 = never, including
+daily commuters, who were not asked; 6 = 5+ days a week; the 2024 "2 days" and "3 days" answers are merged
+into the 2022 "2–3 days" category) and estimates the same models in 2022 and 2024:
+
+1. Samples and the harmonized scale
+2. Main association: linear, quadratic, + Manhattan, + borough and industry, survey-weighted
+3. Three-level contrasts (none / up to 1 day a week / 2+ days): logit, linear probability, weighted, Firth
+4. Robustness grid: alternative exposure codings, controls and samples, pooled and in four groups
+5. Telework × year interaction tests on the pooled 2022 + 2024 data
+6. Heterogeneity by age and workplace location
+7. Mediation through household vehicles, with bootstrap intervals
+8. Weekly car-commute days and commute days
+9. Reported change in household vehicles
+
+The 2022 sample follows the corrected definition of the revised manuscript (N = 1,305: daily commuters
+included, "other" mode excluded), not the v4 definition used by `replication.py`. No values are checked
+against the manuscript, because these results are not yet reported there.
+
+Additional inputs (NYC Open Data, export as CSV):
+
+- Person 2024: <https://data.cityofnewyork.us/Transportation/Citywide-Mobility-Survey-Person-2024/i2im-iqtt>
+  → `data/raw/Citywide_Mobility_Survey_-_Person_2024.csv` (or set `WFH_CSV_2024_PERSON`)
+- Household 2024: <https://data.cityofnewyork.us/Transportation/Citywide-Mobility-Survey-Household-2024/5mb3-padx>
+  → `data/raw/Citywide_Mobility_Survey_-_Household_2024.csv` (or set `WFH_CSV_2024_HOUSEHOLD`)
+
+```bash
+python scripts/robustness_2024.py     # about 10 minutes with 1,000 bootstrap resamples (WFH_BOOT)
+```
 
 ## Software
 
